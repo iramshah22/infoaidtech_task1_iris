@@ -1,0 +1,85 @@
+# Info AidTech Internship 2023
+Syeda Irram Hassan
+Machine learning TASK
+Task 1: **Iris Classsification Task**
+
+
+#importing important libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+#load datatset
+iris = load_iris()
+X = iris.data
+print(X)
+y = iris.target
+
+#splitting data into testing and training set
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=42)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+#scatter plotting for visualization
+plt.figure(figsize = (8,6))
+plt.scatter(X[:,0], X[:,1], c=y, cmap = 'viridis',edgecolor='k')
+plt.xlabel('sepal length')
+plt.ylabel('sepal width')
+plt.title('Iris dataset: Sepal Length vs Sepal Width')
+plt.show()
+
+#plotting for visualization
+plt.figure(figsize = (8,6))
+plt.hist(X[:,2],bins =30, alpha =0.7, label = 'Petal Length')
+plt.hist(X[:,3],bins =30, alpha =0.7, label = 'Petal Width')
+plt.xlabel('Petal lenght')
+plt.ylabel('Petal width')
+plt.title('Iris dataset: Petal Length vs Petal Width')
+plt.legend()
+plt.show()
+
+#K- Nearesr Neighbour
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+knn_predictions = knn.predict(X_test)
+knn_accuracy = accuracy_score(y_test, knn_predictions)
+
+#Decision tree classifier
+dt = DecisionTreeClassifier(random_state=42)
+dt.fit(X_train, y_train)
+dt_predictions = dt.predict(X_test)
+dt_accuracy = accuracy_score(y_test, dt_predictions)
+
+# Print the results
+print("K-Nearest Neighbors (KNN) Accuracy result: {:.2f}%".format(knn_accuracy * 100))
+print("Decision Tree Accuracy: {:.2f}%".format(dt_accuracy * 100))
+print("\nK-Nearest Neighbors (KNN) Classification Report:\n", classification_report(y_test, knn_predictions))
+print("\nDecision Tree Classification Report:\n", classification_report(y_test, dt_predictions))
+
+# Assume i have new data stored in a variable new_data
+new_data = [[5.1, 3.5, 1.4, 0.2], [6.2, 3.4, 5.4, 2.3]]  # Example new data points
+# Standardize the new data
+new_data_standardized = scaler.transform(new_data)
+# Use the trained models to make predictions on the new data
+knn_new_predictions = knn.predict(new_data_standardized)
+dt_new_predictions = dt.predict(new_data_standardized)
+# Print the predictions
+print("K-Nearest Neighbors (KNN) Predictions:", knn_new_predictions)
+print("Decision Tree Predictions:", dt_new_predictions)
+
+#to predict target specie
+class_names = iris.target_names
+
+knn_predicted_classes = [class_names[i] for i in knn_new_predictions]
+dt_predicted_classes = [class_names[i] for i in dt_new_predictions]
+
+# Print the class predictions
+print("\nK-Nearest Neighbors (KNN) Class Predictions:", knn_predicted_classes)
+print("Decision Tree Class Predictions:", dt_predicted_classes)
